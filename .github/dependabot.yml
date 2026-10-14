@@ -3,22 +3,41 @@
 # Please see the documentation for all configuration options:
 # https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
 
+# .NET policy: stay on LTS releases only (even majors: 10, 12, 14...).
+# The odd-numbered STS majors are ignored below for the SDK/runtime images,
+# global.json, and the NuGet packages that ship in lockstep with .NET.
+# Once .NET 14 ships, add ">= 15, < 16" to each list.
+
 version: 2
 updates:
   - package-ecosystem: "docker" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "dotnet/*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
   - package-ecosystem: "nuget" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
       interval: "weekly"
+    ignore:
+      - dependency-name: "Microsoft.AspNetCore.*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
+      - dependency-name: "Microsoft.EntityFrameworkCore*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
+      - dependency-name: "Microsoft.Data.Sqlite*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
+      - dependency-name: "Microsoft.Extensions.*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
   - package-ecosystem: "dotnet-sdk" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
-      interval: "weekly"      
+      interval: "weekly"
+    ignore:
+      - dependency-name: "*"
+        versions: [">= 11, < 12", ">= 13, < 14"]
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
       interval: "weekly"
-
