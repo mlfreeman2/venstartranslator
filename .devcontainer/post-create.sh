@@ -10,10 +10,13 @@ echo "📦 Post-create setup..."
 # written by other containers may carry a different uid — normalize recursively
 sudo chown -R vscode:vscode /home/vscode/.claude
 
-# Ensure Claude Code is installed (baked into the image; this is self-healing)
-if ! command -v claude &> /dev/null; then
+# Ensure Claude Code is installed (baked into the image; this is self-healing).
+# Probe with `claude --version`, not `command -v claude`: a scripts-blocked install
+# still leaves the wrapper on PATH, so `command -v` passes while the binary is
+# missing. --allow-scripts lets the postinstall fetch that native binary.
+if ! claude --version &> /dev/null; then
     echo "  → Installing @anthropic-ai/claude-code..."
-    sudo npm install -g @anthropic-ai/claude-code > /dev/null
+    sudo npm install -g --allow-scripts=@anthropic-ai/claude-code @anthropic-ai/claude-code > /dev/null
 fi
 
 # dotnet-ef is installed for the vscode user by the Dockerfile; this is the
