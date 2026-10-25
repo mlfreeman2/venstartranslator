@@ -71,8 +71,11 @@ RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - \
     && rm -rf /var/lib/apt/lists/* \
     && npm install -g npm@latest
 
-# Install global npm tools
-RUN npm install -g \
+# Install global npm tools. npm 12 blocks package install scripts by default, so
+# @anthropic-ai/claude-code needs an explicit allowlist entry — its postinstall is
+# what downloads the platform-native binary. Without it the package installs but
+# `claude` refuses to run ("native binary not installed").
+RUN npm install -g --allow-scripts=@anthropic-ai/claude-code \
     @anthropic-ai/claude-code \
     typescript \
     eslint \
