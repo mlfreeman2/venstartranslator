@@ -30,6 +30,13 @@ updates:
         versions: [">= 11, < 12", ">= 13, < 14"]
       - dependency-name: "Microsoft.Extensions.*"
         versions: [">= 11, < 12", ">= 13, < 14"]
+    groups:
+      # EF Core packages must move together; bumping one alone fails restore
+      # with NU1605 (package downgrade) against the others.
+      ef-core:
+        patterns:
+          - "Microsoft.EntityFrameworkCore*"
+          - "Microsoft.Data.Sqlite*"
   - package-ecosystem: "dotnet-sdk" # See documentation for possible values
     directory: "/" # Location of package manifests
     schedule:
